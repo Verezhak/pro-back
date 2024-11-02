@@ -8,6 +8,7 @@ import { CLOUDINARY } from '../constants/index.js';
 
 
 
+
 cloudinary.v2.config({
     secure: true,
     cloud_name: env(CLOUDINARY.CLOUD_NAME),

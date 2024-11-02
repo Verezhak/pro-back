@@ -6,6 +6,14 @@ const usersSchema = new Schema(
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        theme: {
+            type: String,
+            enum: ['light', 'dark', 'violet'],
+            required: true,
+            default: 'dark'
+        },
+        avatar: { type: String },
+
     },
     { timestamps: true, versionKey: false },
 );
