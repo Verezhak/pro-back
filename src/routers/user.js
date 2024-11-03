@@ -3,26 +3,14 @@
 import { Router } from 'express';
 import { validateBody } from '../middlewares/validateBody.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { loginUserSchema, registerUserSchema, updateUserSchema } from '../validation/user.js';
-import { getCurrentUserController, loginUserController, logoutUserController, registerUserController, updateThemeController, updateUserController } from '../controllers/userController.js';
+import { updateUserSchema } from '../validation/user.js';
+
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from "../middlewares/multer.js";
+import { getCurrentUserController, updateThemeController, updateUserController } from '../controllers/userController.js';
 const router = Router();
 
-router.post(
-    '/register',
-    validateBody(registerUserSchema),
-    ctrlWrapper(registerUserController),
-);
-router.post(
-    '/login',
-    validateBody(loginUserSchema),
-    ctrlWrapper(loginUserController),
-);
-router.post(
-    '/logout',
-    ctrlWrapper(logoutUserController)
-);
+
 
 router.get(
     '/current',
