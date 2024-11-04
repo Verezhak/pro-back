@@ -1,10 +1,10 @@
-import { SessionsCollection } from '../db/models/session.js';
-import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import createHttpError from 'http-errors';
+import bcrypt from 'bcrypt';
 
 import { TWO_HOURS } from '../constants/index.js';
-import { UsersCollection } from '../db/models/user.js';
+import { UsersCollection } from '../db/user.js';
+import { SessionsCollection } from '../db/session.js';
 
 export const registerUser = async (payload) => {
     const user = await UsersCollection.findOne({ email: payload.email });
@@ -32,12 +32,12 @@ export const loginUser = async (payload) => {
     await SessionsCollection.deleteOne({ userId: user._id });
 
     const accessToken = randomBytes(30).toString('base64');
+
     const session = await SessionsCollection.create({
         userId: user._id,
         accessToken,
         accessTokenValidUntil: new Date(Date.now() + TWO_HOURS),
     });
-
 
     return {
         accessToken: session.accessToken,
@@ -48,8 +48,6 @@ export const loginUser = async (payload) => {
         theme: user.theme,
     };
 };
-
-
 
 export const logoutUser = async (sessionId) => {
     await SessionsCollection.deleteOne({ _id: sessionId });

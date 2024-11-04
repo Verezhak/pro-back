@@ -1,13 +1,15 @@
-
-
 import { isValidObjectId } from 'mongoose';
-import createHttpError from 'http-errors';
+import createError from 'http-errors';
 
-export const isValidId = (req, res, next) => {
-    const { contactId } = req.params;
-    if (!isValidObjectId(contactId)) {
-        throw createHttpError(400, `Invalid contact ID format: ${contactId}. Please provide a valid ID.`);
-    }
+export const isValidId = (param) =>(req, res, next) => {
+  const  itemId  = req.params[param];
+  if (!isValidObjectId(itemId)) {
+    const error = createError(
+      400,
+      `Invalid  ID: ${itemId}. It must be a valid MongoDB ObjectId.`,
+    );
+    return next(error);
+  }
 
-    next();
+  next();
 };

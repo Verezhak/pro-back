@@ -1,4 +1,3 @@
-
 description: Unauthorized error
 content:
   application/json:
@@ -22,4 +21,4 @@ content:
           properties:
             message:
               type: string
-              example: Access token expired
+              example: 'Access token expired'

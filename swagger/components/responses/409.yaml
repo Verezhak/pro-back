@@ -1,6 +1,6 @@
-description: verification email
+description: Conflict error
 content:
-  application/json:
+  aplication/json:
     schema:
       type: object
       required:
@@ -13,7 +13,7 @@ content:
           example: 409
         message:
           type: string
-          example: Email is already in use
+          example: ConflictError
         data:
           type: object
           required:
@@ -21,4 +21,4 @@ content:
           properties:
             message:
               type: string
-              example: Email is already in use
+              example: 'User already exists or email in use'
