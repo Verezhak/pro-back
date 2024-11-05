@@ -23,6 +23,9 @@ export const postColumn = async (req, res) => {
       boardId: boardId, //Леся
     });
 
+
+
+
     // Додаємо колонку до дошки Леся
     await Board.findByIdAndUpdate(boardId, {
       $push: { columns: newColumn._id },
