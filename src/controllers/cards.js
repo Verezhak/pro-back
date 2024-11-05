@@ -17,11 +17,11 @@ export const getAllCardsController = async (req, res, next) => {
 };
 
 
-export const getCardByIdController = async (req, res, next) => { 
+export const getCardByIdController = async (req, res, next) => {
   try {
     const { boardId, cardId } = req.params;
     const card = await Card.findOne({ _id: cardId, boardId });
-    
+
     if (!card) {
       throw createError(404, 'Card not found');
     }

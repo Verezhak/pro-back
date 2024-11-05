@@ -1,35 +1,35 @@
 import mongoose from 'mongoose';
 
 const cardSchema = new mongoose.Schema({
-  title: { 
-    type: String, required: true 
+  title: {
+    type: String, required: true
   },
-  description: { 
-    type: String, required: true 
+  description: {
+    type: String, required: true
   },
-  color: { 
-    type: String, 
-    enum: ['blue', 'pink', 'green', 'gray'], 
-    required: true 
+  color: {
+    type: String,
+    enum: ['blue', 'pink', 'green', 'gray'],
+    required: true
   },
-  date: { 
+  date: {
     type: Date,
-    required: false 
+    required: false
   },
-  boardId: { 
+  boardId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'boards',
-    required: true 
+    required: true
   },
-  columnId: { 
+  columnId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'columns', 
-    required: true 
+    ref: 'columns',
+    required: true
   }
 },
-{
-  timestamps: true,
-  versionKey: false
-});
+  {
+    timestamps: true,
+    versionKey: false
+  });
 
 export const Card = mongoose.model('Card', cardSchema);  
