@@ -11,6 +11,10 @@ export const getAllCardsController = async (req, res, next) => {
 
     const { boardId } = req.params;
     const cards = await Card.find({ boardId });
+    if (!cards || cards.length === 0) {
+      throw createError(404, 'No cards found in this column');
+    }
+
     res.json({
       status: 200,
       message: 'Successfully found cards!',
@@ -21,48 +25,11 @@ export const getAllCardsController = async (req, res, next) => {
   }
 };
 
-export const createCardController = async (req, res, next) => {
-  try {
-    const { title, description, priority, boardId, columnId } = req.body;
-
-    if (
-      !mongoose.Types.ObjectId.isValid(boardId) ||
-      !mongoose.Types.ObjectId.isValid(columnId)
-    ) {
-      return res.status(400).json({ message: 'Invalid boardId or columnId' });
-    }
-
-    const cardData = { title, description, priority, boardId, columnId };
-    const newCard = await Card.create(cardData); // Змінено на newCard Леся
-    console.log('Created card:', newCard);
-
-    // Додавання картки в колонку Леся
-    const updatedColumn = await Column.findByIdAndUpdate(
-      columnId,
-      { $push: { cards: newCard._id } },
-      { new: true }, // Повертає оновлену колонку
-    );
-    console.log('Column after adding card:', updatedColumn);
-    if (!updatedColumn) {
-      //Леся
-      return res.status(404).json({ message: 'Column not found' });
-    }
-
-    console.log('Updated column with new card:', updatedColumn);
-
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a card!',
-      data: newCard,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const getCardByIdController = async (req, res, next) => {
   try {
-    const { boardId, cardId } = req.params;
+    const { boardId } = req.body;
+    const { cardId } = req.params;
     const card = await Card.findOne({ _id: cardId, boardId });
 
     if (!card) {
@@ -78,6 +45,47 @@ export const getCardByIdController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const createCardController = async (req, res, next) => {
+  try {
+    const { title, description, priority, boardId, columnId } = req.body;
+   
+    if (!mongoose.Types.ObjectId.isValid(boardId)) {
+      return res.status(400).json({ message: 'Invalid boardId' });
+    }
+
+    if (columnId && !mongoose.Types.ObjectId.isValid(columnId)) {
+      return res.status(400).json({ message: 'Invalid columnId' });
+    }
+
+    const cardData = { title, description, priority, boardId, columnId };
+    const newCard = await Card.create(cardData); // Змінено на newCard Леся
+    console.log('Created card:', newCard);
+    if (columnId) {
+      const updatedColumn = await Column.findByIdAndUpdate(
+        columnId,
+        { $push: { cards: newCard._id } },
+        { new: true }
+      );
+
+    console.log('Column after adding card:', updatedColumn);
+    if (!updatedColumn) {
+      //Леся
+      return res.status(404).json({ message: 'Column not found' });
+    }
+
+    console.log('Updated column with new card:', updatedColumn);
+  }
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a card!',
+      data: newCard,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 
 
@@ -106,22 +114,28 @@ export const deleteCardController = async (req, res, next) => {
 
 export const updateCardController = async (req, res, next) => {
   try {
-    const { boardId, cardId } = req.params;
-    const { newColumnId } = req.body;
+    const {  cardId } = req.params;
+    const { boardId, newColumnId, ...updateData } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(cardId) || !mongoose.Types.ObjectId.isValid(boardId)) {
+      return res.status(400).json({ message: 'Invalid cardId or boardId format' });
+    }
+    if (newColumnId) {
+      updateData.columnId = newColumnId;
+    }
 
-    const updatedTask = await updateCard(cardId, boardId, {
-      ...req.body,
-      newColumnId
-    });
+    const updatedCard = await updateCard(cardId, boardId, updateData);
 
-    if (!updatedTask) {
+    if (!updatedCard) {
       throw createError(404, 'Card not found');
+    }
+    if (newColumnId) {
+      await Column.findByIdAndUpdate(newColumnId, { $push: { cards: updatedCard._id } }, { new: true });
     }
 
     res.json({
       status: 200,
       message: `Successfully updated Card with id ${cardId}!`,
-      data: updatedTask,
+      data: updatedCard,
     });
   } catch (error) {
     next(error);

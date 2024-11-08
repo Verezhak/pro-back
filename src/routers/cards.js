@@ -6,9 +6,9 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { cardSchema, updateCardSchema } from '../validation/cards.js';
 import { createCardController, deleteCardController, getAllCardsController, getCardByIdController, moveCardController, updateCardController } from '../controllers/cards.js';
 
-const cardsRouter = Router({ mergeParams: true });
+const cardsRouter = Router();
 
-cardsRouter.get('/:boardId', getAllCardsController);
+cardsRouter.get('/:boardId',isValidId('boardId'), getAllCardsController);
 cardsRouter.get('/:cardId', isValidId('cardId'), getCardByIdController);
 cardsRouter.post('/', validateBody(cardSchema), createCardController);
 cardsRouter.patch(

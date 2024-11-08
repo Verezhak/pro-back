@@ -3,9 +3,9 @@
 
 import { Card } from '../db/cards.js';
 
-// export const getAllCards = async (boardId, columnId) => {
-//   return await Card.find({ boardId, columnId });
-// };
+export const getAllCards = async (boardId) => {
+  return await Card.find({ boardId });
+};
 
 
 
@@ -18,7 +18,14 @@ export const createCard = async (payload) => {
 };
 
 export const updateCard = async (cardId, boardId, payload) => {
+  const { newColumnId } = payload;
+
+  
+  if (newColumnId) {
+    payload.columnId = newColumnId;
+  }
   return await Card.findOneAndUpdate({ _id: cardId, boardId }, payload, { new: true });
+
 };
 ;
 
