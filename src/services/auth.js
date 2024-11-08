@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 
-import { TWO_HOURS, ONE_DAY } from '../constants/index.js';
+import { TWO_HOURS } from '../constants/index.js';
 import { UsersCollection } from '../db/user.js';
 import { SessionsCollection } from '../db/session.js';
 
@@ -46,6 +46,7 @@ export const loginUser = async (payload) => {
     email: user.email,
     avatar: user.avatar,
     theme: user.theme,
+    password: user.password,
   };
 };
 
